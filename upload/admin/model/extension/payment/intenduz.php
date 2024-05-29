@@ -12,7 +12,7 @@ class ModelExtensionPaymentintenduz extends Model
                 `order_id` bigint,
                 `status` int ,
 			  PRIMARY KEY (`id`),
-        KEY `intend_paydoc_id` (`intend_paydoc_id`)
+        KEY `id` (`intend_paydoc_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Logs intend Instant Payment Notifications.'
 		"
         );
