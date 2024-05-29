@@ -7,10 +7,10 @@ class ModelExtensionPaymentintenduz extends Model
         $this->db->query(
             "
 			CREATE TABLE IF NOT EXISTS `".DB_PREFIX."intenduz_ipn` (
-                `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'The primary identifier for IPN log',
-                `ref_id` int(10) varchar(255)  COMMENT 'The ref_id from intend',
-                `order_id` int(10) bigint  COMMENT 'The order_id from opencart',
-                `status` int(10) int  COMMENT 'The status from intend',
+                `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'The primary identifier for IPN log',
+                `ref_id` varchar(255) varchar(255),
+                `order_id` bigint,
+                `status` int ,
 			  PRIMARY KEY (`id`),
         KEY `intend_paydoc_id` (`intend_paydoc_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Logs intend Instant Payment Notifications.'
