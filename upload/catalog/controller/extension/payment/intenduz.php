@@ -97,13 +97,51 @@ class ControllerExtensionPaymentIntenduz extends Controller
     public function prepare()
     {
 
-        error_reporting(0);
-        $result = $this->validate_prepare();
+        $errors = [];
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+        $isError = false;
+        if (!isset($data['ref_id'])) {
+            $isError = true;
+            $errors['ref_id'] = "ref_id is required";
+        }
+        $apiKey = $this->config->get('payment_intenduz_api_key');
+        if (!isset($data['api_key']) || $apiKey !== $data['api_key']) {
+            $isError = true;
+            $errors['api_key'] = "api_key is required";
+        }
+        if (!isset($data['order_id'])) {
+            $isError = true;
+            $errors['order_id'] = "order_id is required";
+        }
+        if (!isset($data['status'])) {
+            $isError = true;
+            $errors['status'] = "status is required";
+        }
+        if ($isError) {
+            $this->response->addHeader('Content-Type: application/json');
+            http_response_code(422);
+            return $this->response->setOutput(json_encode([
+                "status" => false,
+                "errors" => $errors
+            ]));
 
-        $this->log->write($result);
-        $this->model_extension_payment_intenduz->updateLog($result['log_id'], ['result_string' => json_encode($result['data'])]);
+        }
+        $this->load->model('account/order');
+        $this->db->query("
+           INSERT INTO oc_intenduz_ipn(ref_id, status, order_id) VALUES ('".$data['ref_id']."',".$data['status'].",".$data['order_id'].");
+            ");
+        if ($data['status'] == 2){
+            $this->db->query('
+            update ' . DB_PREFIX . 'order set order_status_id=5 where order_id=' . $data['order_id'] . '
+            ');
+        }
 
-        exit(json_encode($result['data']));
+        $this->response->addHeader('Content-Type: application/json');
+        return $this->response->setOutput(json_encode([
+            "status" => true,
+            "message" => "success"
+        ]));
     }
 
     public function complete()
