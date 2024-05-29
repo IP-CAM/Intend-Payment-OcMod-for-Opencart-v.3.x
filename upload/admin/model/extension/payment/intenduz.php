@@ -7,8 +7,8 @@ class ModelExtensionPaymentintenduz extends Model
         $this->db->query(
             "
 			CREATE TABLE IF NOT EXISTS `".DB_PREFIX."intenduz_ipn` (
-                `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'The primary identifier for IPN log',
-                `ref_id` varchar(255) varchar(255),
+                `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                `ref_id` varchar(255),
                 `order_id` bigint,
                 `status` int ,
 			  PRIMARY KEY (`id`),
